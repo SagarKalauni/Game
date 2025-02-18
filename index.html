@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I will Find the Name you think using Math with 100% Accuracy</title>
+    <title>Finding the Name inside your mind Using Math</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: #fff;
-            text-align: center;
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
         }
 
         h1 {
@@ -25,18 +23,42 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+        .game-container {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
         }
 
-        .matrix {
-            display: inline-block;
+        .matrix-panel {
+            flex: 1;
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            margin: 10px;
+            min-width: 400px;
+        }
+
+        .commands-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            min-width: 400px;
+            position: relative;
+        }
+
+        .step {
+            display: none;
+            position: absolute;
+            width: calc(100% - 40px);
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         table {
@@ -78,71 +100,69 @@
             background: #ff3b2f;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            margin: 10px;
-            width: 80%;
-            max-width: 500px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .hidden {
             display: none;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .fun-text {
+            font-size: 1.2rem;
+            color: #ff6f61;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Math to Read Mind</h1>
-    <p>Please select the column number from below</p>
-
-    <!-- Step 1: Display the alphabet matrix -->
-    <div id="matrix-container" class="container fade-in">
-        <div class="matrix">
-            <table id="initial-matrix"></table>
+    <h1>Please select column from the below Table</h1>
+    <div class="game-container">
+        <!-- Left Panel for Matrices -->
+        <div class="matrix-panel">
+            <div id="initial-matrix-container">
+                <p>Original Matrix:</p>
+                <table id="initial-matrix"></table>
+            </div>
+            <div id="transposed-matrix-container" class="hidden">
+                <p>Transposed Matrix:</p>
+                <table id="transposed-matrix"></table>
+            </div>
         </div>
-    </div>
 
-    <!-- Step 2: Input for number of letters -->
-    <div id="num-letters-container" class="container fade-in">
-        <label for="num-letters">How many letters are there in the name you were thinking of?</label>
-        <input type="number" id="num-letters" min="1" max="10">
-        <button onclick="startGame()">Start</button>
-    </div>
+        <!-- Right Panel for Commands -->
+        <div class="commands-panel">
+            <!-- Step 1: Number of letters -->
+            <div class="step active" id="step1">
+                <p>How many letters are in the name that is in your mind?</p>
+                <input type="number" id="num-letters" min="1" max="10">
+                <button onclick="startGame()">Start</button>
+            </div>
 
-    <!-- Step 3: Input for column numbers -->
-    <div id="column-input-container" class="container hidden">
-        <p>Enter the column numbers for each letter:</p>
-        <div id="column-inputs"></div>
-        <button onclick="submitColumns()">Next</button>
-    </div>
+            <!-- Step 2: Column inputs -->
+            <div class="step" id="step2">
+                <p class="fun-text">Let's find your name! Enter the column number for each letter one by one.</p>
+                <div id="column-inputs"></div>
+                <button id="next-button" onclick="submitColumn()">Next</button>
+            </div>
 
-    <!-- Step 4: Display transposed matrix -->
-    <div id="transposed-matrix-container" class="container hidden">
-        <p>I am almost colse, Select the column final time:</p>
-        <div class="matrix">
-            <table id="transposed-matrix"></table>
+            <!-- Step 3: Final column inputs -->
+            <div class="step" id="step3">
+                <p class="fun-text">Almost there! Select the column numbers again.</p>
+                <div id="final-column-inputs"></div>
+                <button onclick="submitFinalColumns()">Reveal Name</button>
+            </div>
+
+            <!-- Step 4: Result -->
+            <div class="step" id="step4">
+                <h2>Final Mappings:</h2>
+                <div id="final-mappings"></div>
+                <h2>The name you're thinking of is:</h2>
+                <div id="final-name" style="font-size: 2rem; font-weight: bold; color: #ff6f61;"></div>
+                <button onclick="resetGame()">Play Again</button>
+            </div>
         </div>
-        <div id="final-column-inputs"></div>
-        <button onclick="submitFinalColumns()">Reveal Name</button>
-    </div>
-
-    <!-- Step 5: Display final result -->
-    <div id="result-container" class="container hidden">
-        <h2>Final Mappings:</h2>
-        <div id="final-mappings"></div>
-        <h2>The name you're thinking of is:</h2>
-        <div id="final-name" style="font-size: 2rem; font-weight: bold; color: #ff6f61;"></div>
     </div>
 
     <script>
@@ -153,8 +173,8 @@
         let transposedRows = [];
         let finalMappings = [];
         let finalName = "";
+        let currentLetterIndex = 0;
 
-        // Step 1: Create the 6x5 alphabet matrix
         function createMatrix() {
             for (let i = 0; i < alphabet.length; i += 5) {
                 matrix.push(alphabet.slice(i, i + 5));
@@ -162,11 +182,10 @@
             displayMatrix(matrix, "initial-matrix");
         }
 
-        // Step 2: Display the matrix
-        function displayMatrix(matrix, containerId) {
+        function displayMatrix(matrixData, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = "";
-            matrix.forEach(row => {
+            matrixData.forEach(row => {
                 const tr = document.createElement("tr");
                 row.split("").forEach(cell => {
                     const td = document.createElement("td");
@@ -177,67 +196,75 @@
             });
         }
 
-        // Step 3: Start the game
         function startGame() {
             numLetters = parseInt(document.getElementById("num-letters").value);
             if (numLetters < 1 || numLetters > 10) {
                 alert("Please enter a number between 1 and 10.");
                 return;
             }
-            document.getElementById("num-letters-container").classList.add("hidden");
-            document.getElementById("column-input-container").classList.remove("hidden");
-            document.getElementById("column-input-container").classList.add("fade-in");
 
-            // Create input fields for column numbers
+            // Reset game state
+            currentLetterIndex = 0;
+            columnNumbers = [];
+            transposedRows = [];
+            finalMappings = [];
+            finalName = "";
+
+            // Create column inputs
             const columnInputs = document.getElementById("column-inputs");
-            columnInputs.innerHTML = "";
-            for (let i = 0; i < numLetters; i++) {
-                const label = document.createElement("label");
-                label.textContent = `Column for letter ${i + 1}: `;
-                const input = document.createElement("input");
-                input.type = "number";
-                input.min = 1;
-                input.max = 5;
-                input.required = true;
-                columnInputs.appendChild(label);
-                columnInputs.appendChild(input);
-                columnInputs.appendChild(document.createElement("br"));
+            columnInputs.innerHTML = `
+                <p>Enter the column number for Letter ${currentLetterIndex + 1}:</p>
+                <input type="number" min="1" max="5" required>
+            `;
+
+            showStep(2);
+        }
+
+        function submitColumn() {
+            const input = document.querySelector("#column-inputs input");
+            const columnNumber = parseInt(input.value);
+
+            if (columnNumber < 1 || columnNumber > 5) {
+                alert("Please enter a number between 1 and 5.");
+                return;
+            }
+
+            columnNumbers.push(columnNumber);
+            currentLetterIndex++;
+
+            if (currentLetterIndex < numLetters) {
+                const columnInputs = document.getElementById("column-inputs");
+                columnInputs.innerHTML = `
+                    <p>Enter the column number for Letter ${currentLetterIndex + 1}:</p>
+                    <input type="number" min="1" max="5" required>
+                `;
+            } else {
+                // Transpose matrix
+                transposedRows = columnNumbers.map(col => {
+                    return matrix.map(row => row[col - 1] || "").join("");
+                });
+
+                // Show transposed matrix
+                document.getElementById("initial-matrix-container").classList.add("hidden");
+                document.getElementById("transposed-matrix-container").classList.remove("hidden");
+                displayMatrix(transposedRows, "transposed-matrix");
+
+                // Create final inputs
+                const finalInputs = document.getElementById("final-column-inputs");
+                finalInputs.innerHTML = "";
+                for (let i = 0; i < numLetters; i++) {
+                    const div = document.createElement("div");
+                    div.innerHTML = `
+                        <label>Letter ${i + 1} column: </label>
+                        <input type="number" min="1" max="${transposedRows[i].length}" required>
+                    `;
+                    finalInputs.appendChild(div);
+                }
+
+                showStep(3);
             }
         }
 
-        // Step 4: Submit column numbers
-        function submitColumns() {
-            const inputs = document.querySelectorAll("#column-inputs input");
-            columnNumbers = Array.from(inputs).map(input => parseInt(input.value));
-
-            // Transpose the selected columns into rows
-            transposedRows = columnNumbers.map(col => {
-                return matrix.map(row => row[col - 1] || "").join("");
-            });
-
-            document.getElementById("column-input-container").classList.add("hidden");
-            document.getElementById("transposed-matrix-container").classList.remove("hidden");
-            document.getElementById("transposed-matrix-container").classList.add("fade-in");
-            displayMatrix(transposedRows, "transposed-matrix");
-
-            // Create input fields for final column numbers
-            const finalColumnInputs = document.getElementById("final-column-inputs");
-            finalColumnInputs.innerHTML = "";
-            for (let i = 0; i < numLetters; i++) {
-                const label = document.createElement("label");
-                label.textContent = `Column for letter ${i + 1}: `;
-                const input = document.createElement("input");
-                input.type = "number";
-                input.min = 1;
-                input.max = transposedRows[i].length;
-                input.required = true;
-                finalColumnInputs.appendChild(label);
-                finalColumnInputs.appendChild(input);
-                finalColumnInputs.appendChild(document.createElement("br"));
-            }
-        }
-
-        // Step 5: Submit final column numbers and reveal the name
         function submitFinalColumns() {
             const inputs = document.querySelectorAll("#final-column-inputs input");
             const finalColumns = Array.from(inputs).map(input => parseInt(input.value));
@@ -250,11 +277,20 @@
                 finalName += letter;
             }
 
-            document.getElementById("transposed-matrix-container").classList.add("hidden");
-            document.getElementById("result-container").classList.remove("hidden");
-            document.getElementById("result-container").classList.add("fade-in");
             document.getElementById("final-mappings").textContent = finalMappings.join(", ");
             document.getElementById("final-name").textContent = finalName.toUpperCase();
+            showStep(4);
+        }
+
+        function resetGame() {
+            document.getElementById("initial-matrix-container").classList.remove("hidden");
+            document.getElementById("transposed-matrix-container").classList.add("hidden");
+            showStep(1);
+        }
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step${stepNumber}`).classList.add('active');
         }
 
         // Initialize the game
