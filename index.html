@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finding the Name inside your mind Using Math by Sagar</title>
+    <title>Reading your mind using Math</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -117,7 +117,7 @@
     </style>
 </head>
 <body>
-    <h1>Reading Mind Using Math</h1>
+    <h1>Reading Mind Using Math by Sagar</h1>
     <div class="game-container">
         <!-- Left Panel for Matrices -->
         <div class="matrix-panel">
@@ -135,30 +135,28 @@
         <div class="commands-panel">
             <!-- Step 1: Number of letters -->
             <div class="step active" id="step1">
-                <p>How many letters are in the name that is in your mind?</p>
+                <p>How many letters are in the name?</p>
                 <input type="number" id="num-letters" min="1" max="10">
                 <button onclick="startGame()">Start</button>
             </div>
 
             <!-- Step 2: Column inputs -->
             <div class="step" id="step2">
-                <p class="fun-text">Let's me use my special trick [Sagar's Trick] and Mathematical formula to find it! \n
-                    Enter the column number for each letter one by one.</p>
+                <p class="fun-text">Let's me use hidden math formula to find Name! \n
+                Enter the column number for each letter one by one.</p>
                 <div id="column-inputs"></div>
                 <button id="next-button" onclick="submitColumn()">Next</button>
             </div>
 
             <!-- Step 3: Final column inputs -->
             <div class="step" id="step3">
-                <p class="fun-text">Almost there! Select the column numbers again.</p>
+                <p class="fun-text">I am Almost there! Select the column numbers again.</p>
                 <div id="final-column-inputs"></div>
                 <button onclick="submitFinalColumns()">Reveal Name</button>
             </div>
 
             <!-- Step 4: Result -->
             <div class="step" id="step4">
-                <h2>Final Mappings:</h2>
-                <div id="final-mappings"></div>
                 <h2>The name you're thinking of is:</h2>
                 <div id="final-name" style="font-size: 2rem; font-weight: bold; color: #ff6f61;"></div>
                 <button onclick="resetGame()">Play Again</button>
@@ -172,7 +170,6 @@
         let numLetters = 0;
         let columnNumbers = [];
         let transposedRows = [];
-        let finalMappings = [];
         let finalName = "";
         let currentLetterIndex = 0;
 
@@ -208,7 +205,6 @@
             currentLetterIndex = 0;
             columnNumbers = [];
             transposedRows = [];
-            finalMappings = [];
             finalName = "";
 
             // Create column inputs
@@ -270,15 +266,12 @@
             const inputs = document.querySelectorAll("#final-column-inputs input");
             const finalColumns = Array.from(inputs).map(input => parseInt(input.value));
 
-            finalMappings = [];
             finalName = "";
             for (let i = 0; i < numLetters; i++) {
                 const letter = transposedRows[i][finalColumns[i] - 1];
-                finalMappings.push(`${columnNumbers[i]}${finalColumns[i]}-${letter.toUpperCase()}`);
                 finalName += letter;
             }
 
-            document.getElementById("final-mappings").textContent = finalMappings.join(", ");
             document.getElementById("final-name").textContent = finalName.toUpperCase();
             showStep(4);
         }
