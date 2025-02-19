@@ -3,62 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading your mind using Math</title>
+    <title>Mind Reading Game</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: #fff;
+            text-align: center;
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        .intro-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 20px auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .game-container {
-            display: flex;
-            gap: 30px;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 20px;
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
         }
 
-        .matrix-panel {
-            flex: 1;
+        .highlight {
+            color: #ff6f61;
+            font-weight: bold;
+        }
+
+        .matrix {
+            display: inline-block;
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            min-width: 400px;
-        }
-
-        .commands-panel {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            min-width: 400px;
-            position: relative;
-        }
-
-        .step {
-            display: none;
-            position: absolute;
-            width: calc(100% - 40px);
-        }
-
-        .step.active {
-            display: block;
-            animation: fadeIn 0.5s ease-in-out;
+            margin: 10px;
         }
 
         table {
@@ -100,68 +87,93 @@
             background: #ff3b2f;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            width: 80%;
+            max-width: 500px;
         }
 
         .hidden {
             display: none;
         }
 
-        .fun-text {
-            font-size: 1.2rem;
-            color: #ff6f61;
-            margin-bottom: 10px;
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .current-highlight {
+            background-color: rgba(255, 165, 0, 0.5) !important;
+        }
+
+        .fixed-highlight {
+            background-color: rgba(0, 255, 0, 0.5) !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <h1>Reading Mind Using Math by Sagar</h1>
-    <div class="game-container">
-        <!-- Left Panel for Matrices -->
-        <div class="matrix-panel">
-            <div id="initial-matrix-container">
-                <p>Coded alphabet: Look for the column number containing letters of your name</p>
-                <table id="initial-matrix"></table>
-            </div>
-            <div id="transposed-matrix-container" class="hidden">
-                <p>Coded alphabet with K-rule:</p>
-                <table id="transposed-matrix"></table>
-            </div>
+    <div class="intro-container fade-in">
+        <h1>🔮 Mind Reading Challenge!</h1>
+        <div class="intro-text">
+            <p>Hi there! I'm Sagar, a Mathematics, Statistics and Data Science enthusiast.</p>
+            <p>Through the power of mathematics, machine learning and algorithmic thinking, I can decode your thoughts! Ready to test my skills?</p>
+            <p class="highlight">Here's how it works:</p>
+            <ol style="text-align: left; margin: 15px 0;">
+                <li>Think of any ENGLISH NAME </li>
+                <li>I'll show you all alphabet</li>
+                <li>Answer simple column selections</li>
+                <li>Watch as I reveal your chosen name!</li>
+            </ol>
+            <p>No AI, No Magic - just pure mathematics and Logic!</p>
         </div>
+        <button onclick="startIntroduction()" style="font-size: 1.2rem; padding: 15px 30px;">
+            🎮 Let's Begin!
+        </button>
+    </div>
 
-        <!-- Right Panel for Commands -->
-        <div class="commands-panel">
-            <!-- Step 1: Number of letters -->
-            <div class="step active" id="step1">
-                <p>Please enter the number of letters in the name you're thinking of.😊</p>
-                <input type="number" id="num-letters" min="1" max="10">
-                <button onclick="startGame()">Start</button>
-            </div>
-
-            <!-- Step 2: Column inputs -->
-            <div class="step" id="step2">
-                <p class="fun-text">Let's me use hidden math formula to find Name on your Mind!
-                Enter the column number for each letter one by one.</p>
-                <div id="column-inputs"></div>
-                <button id="next-button" onclick="submitColumn()">Next</button>
-            </div>
-
-            <!-- Step 3: Final column inputs -->
-            <div class="step" id="step3">
-                <p class="fun-text">I am Almost there! Select the column numbers again.</p>
-                <div id="final-column-inputs"></div>
-                <button onclick="submitFinalColumns()">Reveal Name</button>
-            </div>
-
-            <!-- Step 4: Result -->
-            <div class="step" id="step4">
-                <h2>The name you're thinking of is:</h2>
-                <div id="final-name" style="font-size: 2rem; font-weight: bold; color: #ff6f61;"></div>
-                <button onclick="resetGame()">Play Again</button>
-            </div>
+    <div id="matrix-container" class="container hidden">
+        <div class="matrix">
+            <table id="initial-matrix"></table>
         </div>
+    </div>
+
+    <div id="num-letters-container" class="container hidden">
+        <label for="num-letters">How many letters are in the name?</label>
+        <input type="number" id="num-letters" min="1" max="10">
+        <button onclick="startGame()">Start</button>
+    </div>
+
+    <div id="column-input-container" class="container hidden">
+        <p>Enter the column numbers for each letter:</p>
+        <div id="column-inputs">
+            <label id="current-column-label">Column number for letter 1: </label>
+            <input type="number" id="current-column-input" min="1" max="5">
+            <button onclick="submitSingleColumn()">Next</button>
+        </div>
+    </div>
+
+    <div id="transposed-matrix-container" class="container hidden">
+        <p>I am almost there! Kindly select the column numbers again:</p>
+        <div class="matrix">
+            <table id="transposed-matrix"></table>
+        </div>
+        <div id="final-column-inputs"></div>
+        <button onclick="submitFinalColumns()">Reveal Name</button>
+    </div>
+
+    <div id="result-container" class="container hidden">
+        <h2>The name you were thinking of is:</h2>
+        <div id="final-name" style="font-size: 2.5rem; font-weight: bold; color: #ff6f61; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);"></div>
+        <br>
+        <p>✨ Amazing, right? ✨<br>Do check my other works on my portofolio at Sagarkalauni.github.io!</p>
     </div>
 
     <script>
@@ -171,7 +183,14 @@
         let columnNumbers = [];
         let transposedRows = [];
         let finalName = "";
-        let currentLetterIndex = 0;
+        let currentColumnIndex = 0;
+
+        function startIntroduction() {
+            document.querySelector('.intro-container').classList.add('hidden');
+            document.getElementById('num-letters-container').classList.remove('hidden');
+            document.getElementById('matrix-container').classList.remove('hidden');
+            createMatrix();
+        }
 
         function createMatrix() {
             for (let i = 0; i < alphabet.length; i += 5) {
@@ -180,10 +199,10 @@
             displayMatrix(matrix, "initial-matrix");
         }
 
-        function displayMatrix(matrixData, containerId) {
+        function displayMatrix(matrix, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = "";
-            matrixData.forEach(row => {
+            matrix.forEach(row => {
                 const tr = document.createElement("tr");
                 row.split("").forEach(cell => {
                     const td = document.createElement("td");
@@ -200,65 +219,94 @@
                 alert("Please enter a number between 1 and 10.");
                 return;
             }
-
-            // Reset game state
-            currentLetterIndex = 0;
+            document.getElementById("num-letters-container").classList.add("hidden");
+            document.getElementById("column-input-container").classList.remove("hidden");
+            document.getElementById("column-input-container").classList.add("fade-in");
             columnNumbers = [];
-            transposedRows = [];
-            finalName = "";
-
-            // Create column inputs
-            const columnInputs = document.getElementById("column-inputs");
-            columnInputs.innerHTML = `
-                <p>Enter the column number for Letter ${currentLetterIndex + 1}:</p>
-                <input type="number" min="1" max="5" required>
-            `;
-
-            showStep(2);
+            currentColumnIndex = 0;
+            setupNextColumnInput();
         }
 
-        function submitColumn() {
-            const input = document.querySelector("#column-inputs input");
-            const columnNumber = parseInt(input.value);
+        function setupNextColumnInput() {
+            const container = document.getElementById("column-inputs");
+            container.innerHTML = `
+                <label id="current-column-label">Column for letter ${currentColumnIndex + 1}: </label>
+                <input type="number" id="current-column-input" min="1" max="5" autofocus>
+                <button onclick="submitSingleColumn()">${currentColumnIndex < numLetters - 1 ? 'Next' : 'Submit'}</button>
+            `;
+            const input = document.getElementById('current-column-input');
+            input.oninput = function() {
+                highlightCurrentColumn(parseInt(this.value));
+            };
+        }
 
-            if (columnNumber < 1 || columnNumber > 5) {
-                alert("Please enter a number between 1 and 5.");
+        function highlightCurrentColumn(col) {
+            const cells = document.querySelectorAll("#initial-matrix td");
+            cells.forEach(cell => cell.classList.remove('current-highlight'));
+            
+            if (col >= 1 && col <= 5) {
+                cells.forEach((cell, index) => {
+                    if ((index % 5) === (col - 1)) {
+                        cell.classList.add('current-highlight');
+                    }
+                });
+            }
+        }
+
+        function submitSingleColumn() {
+            const input = document.getElementById('current-column-input');
+            const col = parseInt(input.value);
+            if (col < 1 || col > 5) {
+                alert("Please enter a valid column number (1-5)");
                 return;
             }
 
-            columnNumbers.push(columnNumber);
-            currentLetterIndex++;
-
-            if (currentLetterIndex < numLetters) {
-                const columnInputs = document.getElementById("column-inputs");
-                columnInputs.innerHTML = `
-                    <p>Enter the column number for Letter ${currentLetterIndex + 1}:</p>
-                    <input type="number" min="1" max="5" required>
-                `;
-            } else {
-                // Transpose matrix
-                transposedRows = columnNumbers.map(col => {
-                    return matrix.map(row => row[col - 1] || "").join("");
-                });
-
-                // Show transposed matrix
-                document.getElementById("initial-matrix-container").classList.add("hidden");
-                document.getElementById("transposed-matrix-container").classList.remove("hidden");
-                displayMatrix(transposedRows, "transposed-matrix");
-
-                // Create final inputs
-                const finalInputs = document.getElementById("final-column-inputs");
-                finalInputs.innerHTML = "";
-                for (let i = 0; i < numLetters; i++) {
-                    const div = document.createElement("div");
-                    div.innerHTML = `
-                        <label>Letter ${i + 1} column: </label>
-                        <input type="number" min="1" max="${transposedRows[i].length}" required>
-                    `;
-                    finalInputs.appendChild(div);
+            // Set permanent green highlight
+            const cells = document.querySelectorAll("#initial-matrix td");
+            cells.forEach((cell, index) => {
+                if ((index % 5) === (col - 1)) {
+                    cell.classList.add('fixed-highlight');
+                    cell.classList.remove('current-highlight');
                 }
+            });
 
-                showStep(3);
+            columnNumbers.push(col);
+            currentColumnIndex++;
+
+            if (currentColumnIndex < numLetters) {
+                setupNextColumnInput();
+            } else {
+                submitColumns();
+            }
+        }
+
+        function submitColumns() {
+            document.getElementById("column-input-container").classList.add("hidden");
+            document.getElementById("transposed-matrix-container").classList.remove("hidden");
+            document.getElementById("transposed-matrix-container").classList.add("fade-in");
+            
+            transposedRows = columnNumbers.map(col => 
+                matrix.map(row => row[col - 1] || "").join("")
+            );
+            
+            displayMatrix(transposedRows, "transposed-matrix");
+            setupTransposedInputs();
+        }
+
+        function setupTransposedInputs() {
+            const container = document.getElementById("final-column-inputs");
+            container.innerHTML = '';
+            
+            for (let i = 0; i < numLetters; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = `
+                    <label>Column for letter ${i + 1}: </label>
+                    <input type="number" 
+                           min="1" 
+                           max="${transposedRows[i].length}" 
+                           data-row="${i}">
+                `;
+                container.appendChild(wrapper);
             }
         }
 
@@ -272,23 +320,11 @@
                 finalName += letter;
             }
 
-            document.getElementById("final-name").textContent = finalName.toUpperCase();
-            showStep(4);
-        }
-
-        function resetGame() {
-            document.getElementById("initial-matrix-container").classList.remove("hidden");
             document.getElementById("transposed-matrix-container").classList.add("hidden");
-            showStep(1);
+            document.getElementById("result-container").classList.remove("hidden");
+            document.getElementById("result-container").classList.add("fade-in");
+            document.getElementById("final-name").textContent = finalName.toUpperCase();
         }
-
-        function showStep(stepNumber) {
-            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-            document.getElementById(`step${stepNumber}`).classList.add('active');
-        }
-
-        // Initialize the game
-        createMatrix();
     </script>
 </body>
 </html>
