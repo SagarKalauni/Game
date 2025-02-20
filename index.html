@@ -272,7 +272,6 @@
     </div>
 
     <script>
-        // Existing JavaScript code
         const alphabet = "abcdefghijklmnopqrstuvwxyz";
         const matrix = [];
         let numLetters = 0;
@@ -316,6 +315,7 @@
                 return;
             }
             document.getElementById("num-letters-container").classList.add("hidden");
+            document.getElementById("matrix-container").classList.add("hidden"); // Hide the first matrix
             document.getElementById("column-input-container").classList.remove("hidden");
             document.getElementById("column-input-container").classList.add("fade-in");
             columnNumbers = [];
