@@ -37,9 +37,14 @@
 
         .math-symbols span {
             position: absolute;
-            font-size: 2rem;
+            font-size: 4rem; /* Default size for math symbols */
             color: rgba(255, 255, 255, 0.5);
             animation: float 10s infinite ease-in-out;
+        }
+
+        .math-symbols .infinity {
+            font-size: 12rem; /* 3 times larger than default (4rem * 3 = 12rem) */
+            color: rgba(255, 255, 255, 0.7); /* Slightly brighter for emphasis */
         }
 
         @keyframes float {
@@ -189,6 +194,10 @@
         <span style="top: 70%; left: 60%;">/</span>
         <span style="top: 90%; left: 20%;">+</span>
         <span style="top: 40%; left: 90%;">-</span>
+        <!-- Infinity symbols -->
+        <span class="infinity" style="top: 15%; left: 40%;">∞</span>
+        <span class="infinity" style="top: 60%; left: 70%;">∞</span>
+        <span class="infinity" style="top: 80%; left: 10%;">∞</span>
     </div>
 
     <!-- Existing HTML content -->
