@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mind Reading Game</title>
     <style>
-        /* Existing styles */
+        /* General styles */
         body {
             font-family: 'Arial', sans-serif;
             color: #fff;
@@ -22,17 +22,19 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            overflow: hidden; /* Prevent scrollbars from floating elements */
+            overflow: auto; /* Allow scrolling if content overflows */
+            position: relative; /* Needed for floating symbols */
         }
 
         /* Floating math symbols */
         .math-symbols {
-            position: absolute;
+            position: fixed; /* Fixed to stay in place while scrolling */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none; /* Ensure clicks pass through */
+            z-index: 1; /* Behind the main content */
         }
 
         .math-symbols span {
@@ -43,7 +45,7 @@
         }
 
         .math-symbols .infinity {
-            font-size: 12rem; /* 3 times larger than default (4rem * 3 = 12rem) */
+            font-size: 12rem; /* 3 times larger than default */
             color: rgba(255, 255, 255, 0.7); /* Slightly brighter for emphasis */
         }
 
@@ -53,6 +55,16 @@
             50% { transform: translateY(0) translateX(100vw) rotate(180deg); opacity: 1; }
             75% { transform: translateY(50vh) translateX(50vw) rotate(270deg); opacity: 0.75; }
             100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.5; }
+        }
+
+        /* Main content container */
+        .main-content {
+            position: relative;
+            z-index: 2; /* Above the floating symbols */
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         /* Styled text */
@@ -200,61 +212,63 @@
         <span class="infinity" style="top: 80%; left: 10%;">∞</span>
     </div>
 
-    <!-- Existing HTML content -->
-    <div class="intro-container fade-in">
-        <h1>🔮 Mind Reading Challenge!</h1>
-        <div class="intro-text">
-            <p>Hi there! I'm Sagar, a Mathematics, Statistics and Data Science enthusiast.</p>
-            <p>Using mathematics, machine learning and algorithmic thinking, I can decode your thoughts! Ready to test my skills?</p>
-            <p class="highlight">Here's how it works:</p>
-            <ol style="text-align: left; margin: 15px 0;">
-                <li>Think of any ENGLISH NAME </li>
-                <li>I'll show you all alphabet</li>
-                <li>Answer simple column selections</li>
-                <li>Watch as I reveal your chosen name!</li>
-            </ol>
-            <p>No AI, No Magic - just pure mathematics and Logic!</p>
+    <!-- Main content -->
+    <div class="main-content">
+        <div class="intro-container fade-in">
+            <h1>🔮 Mind Reading Challenge!</h1>
+            <div class="intro-text">
+                <p>Hi there! I'm Sagar, a Mathematics, Statistics and Data Science enthusiast.</p>
+                <p>Using mathematics, machine learning and algorithmic thinking, I can decode your thoughts! Ready to test my skills?</p>
+                <p class="highlight">Here's how it works:</p>
+                <ol style="text-align: left; margin: 15px 0;">
+                    <li>Think of any ENGLISH NAME </li>
+                    <li>I'll show you all alphabet</li>
+                    <li>Answer simple column selections</li>
+                    <li>Watch as I reveal your chosen name!</li>
+                </ol>
+                <p>No AI, No Magic - just pure mathematics and Logic!</p>
+            </div>
+            <button onclick="startIntroduction()" style="font-size: 1.2rem; padding: 15px 30px;">
+                🎮 Let's Begin!
+            </button>
         </div>
-        <button onclick="startIntroduction()" style="font-size: 1.2rem; padding: 15px 30px;">
-            🎮 Let's Begin!
-        </button>
-    </div>
 
-    <div id="matrix-container" class="container hidden">
-        <div class="matrix">
-            <table id="initial-matrix"></table>
+        <div id="matrix-container" class="container hidden">
+            <div class="matrix">
+                <table id="initial-matrix"></table>
+            </div>
         </div>
-    </div>
 
-    <div id="num-letters-container" class="container hidden">
-        <label for="num-letters">How many letters are in the name?</label>
-        <input type="number" id="num-letters" min="1" max="10">
-        <button onclick="startGame()">Start</button>
-    </div>
-
-    <div id="column-input-container" class="container hidden">
-        <p>Enter the column numbers for each letter:</p>
-        <div id="column-inputs">
-            <label id="current-column-label">Column number for letter 1: </label>
-            <input type="number" id="current-column-input" min="1" max="5">
-            <button onclick="submitSingleColumn()">Next</button>
+        <div id="num-letters-container" class="container hidden">
+            <label for="num-letters">How many letters are in the name?</label>
+            <input type="number" id="num-letters" min="1" max="10">
+            <button onclick="startGame()">Start</button>
         </div>
-    </div>
 
-    <div id="transposed-matrix-container" class="container hidden">
-        <p class="styled-text">I am almost there! Kindly select the column numbers again:</p>
-        <div class="matrix">
-            <table id="transposed-matrix"></table>
+        <div id="column-input-container" class="container hidden">
+            <p>Enter the column numbers for each letter:</p>
+            <div id="column-inputs">
+                <label id="current-column-label">Column number for letter 1: </label>
+                <input type="number" id="current-column-input" min="1" max="5">
+                <button onclick="submitSingleColumn()">Next</button>
+            </div>
         </div>
-        <div id="final-column-inputs"></div>
-        <button onclick="submitFinalColumns()">Reveal Name</button>
-    </div>
 
-    <div id="result-container" class="container hidden">
-        <h2>The name you were thinking of is:</h2>
-        <div id="final-name"></div>
-        <br>
-        <p>✨ Amazing, right? ✨<br>Cheers!</p>
+        <div id="transposed-matrix-container" class="container hidden">
+            <p class="styled-text">I am almost there! Kindly select the column numbers again:</p>
+            <div class="matrix">
+                <table id="transposed-matrix"></table>
+            </div>
+            <div id="final-column-inputs"></div>
+            <button onclick="submitFinalColumns()">Reveal Name</button>
+        </div>
+
+        <div id="result-container" class="container hidden">
+            <h2>The name you were thinking of is:</h2>
+            <div id="final-name"></div>
+            <br>
+            <p>✨ Amazing, right? ✨<br>Cheers!</p>
+        </div>
     </div>
 
     <script>
